@@ -1,73 +1,42 @@
-![Pandas Generator Intro](banner.png)
+# 🐼 NumPanda Studio
 
-# Pandas Generator Studio 🐼
+![NumPanda Banner](./banner.png)
 
-Een lokale standalone applicatie met een moderne React GUI en een krachtige Python Pandas backend voor deterministische, AI-ondersteunde dataverwerking.
+**NumPanda Studio** is een geavanceerde, lokale data science workbench die de eenvoud van Pandas combineert met de kracht van NumPy en een moderne UI. Het stelt gebruikers in staat om datasets te verkennen, transformeren en visualiseren zonder een regel code te schrijven, terwijl de onderliggende Python-code (inclusief `.ipynb` notebooks) automatisch wordt gegenereerd.
 
-## 🚀 Status: V2 Release (UX Transformation)
+## ✨ Belangrijkste Functies
 
-Dit project is getransformeerd naar **Pandas Studio 2.0**: Een volwaardige Data Studio ervaring.
+### 🧠 Intelligence & Visualisatie
+- **AI Magic Bar**: Vraag de AI om transformaties uit te voeren met natuurlijke taal (bijv. *"Sorteer op salaris en verwijder de id kolom"*).
+- **Auto-Visualizer**: Bekijk direct distributies (histogrammen) en categorieën (taartdiagrammen) voor elke kolom.
+- **Recept Historie**: Een visuele tijdlijn van al je stappen met volledige Undo/Redo ondersteuning.
 
-### ✨ Nieuwe Features (V2)
-- **Smart Grid**: Professionele spreadsheet-ervaring met `ag-grid`. Sorteren, filteren en resizen van kolommen.
-- **Action Builder Sidebar**: Bouw complexe transformaties (Filter, Sort, Drop) via een visuele UI in plaats van code.
-- **Visual Profiling**: Dashboard met datakwaliteit grafieken en statistieken per kolom.
-- **3-Pane Layout**: Geoptimaliseerde interface voor maximale productiviteit.
+### 🚀 Krachtige Transformaties
+- **NumPy Integratie**: Voer razendsnelle wiskundige operaties uit (`log`, `sqrt`, `ceil`) en conditionele logica (`if/else`).
+- **Data Cleaning**: Slimme suggesties voor datakwaliteit, zero-click `DropNA` / `FillNA`.
+- **Veilige Sandbox**: Werkt volledig lokaal. Jouw data verlaat nooit je machine.
 
-### ✨ Core Features (V1)
-- **Time Travel (Undo/Redo)**: Volledige sessie-geschiedenis. Maak fouten ongedaan en experimenteer vrij.
-- **Code Export**: Genereer met één klik een volledig reproduceerbaar Python script (`pandas_script.py`) van je hele sessie.
-- **Persistent Sessions**: Je werk wordt automatisch opgeslagen. Server restarts? Geen probleem, je sessie blijft bestaan.
-- **Secure Loader**: Beveiligd tegen Local File Inclusion (LFI). Alleen bestanden binnen de projectmap mogen geladen worden.
+### 🛠️ Developer Friendly
+- **Code Export**: Exporteer je sessie direct naar een Python script (`.py`) of Jupyter Notebook (`.ipynb`).
+- **Deterministisch**: 100% reproduceerbare resultaten.
 
-### 🏗️ Architectuur & Kwaliteit
-- **Backend**: FastAPI + Pandas Engine.
-    - **Clean Architecture**: Strikte scheiding tussen `Actions` (logica), `Session` (state) en `API` (interface).
-    - **Static Typing**: Volledig getypeerd met `mypy` en `Pydantic` schemas.
-    - **Unit Tests**: Core logica (Code Generation, Session Logic) is getest met `pytest`.
-- **Frontend**: React + Vite + TailwindCSS.
-    - **State Management**: Robuuste implementatie met `Zustand`.
-    - **Type Safety**: Strikte TypeScript interfaces (met `import type` optimalisaties).
-    - **UI**: Modern "Glassmorphism" design.
-- **DevOps**: Docker & Docker Compose setup aanwezig.
-
-## Installatie & Setup
+## 🏁 Aan de slag
 
 ### Vereisten
-- Node.js (v18+)
-- Python (v3.9+)
+- Docker & Docker Compose
 
-### Snel Starten
-1. **Repository Clone**
+### Installatie & Start
+1. Clone de repository.
+2. Start de stack:
    ```bash
-   git clone https://github.com/parvenuprompting/pandas-studio.git
-   cd pandas-studio
+   docker-compose up --build
    ```
+3. Open je browser op `http://localhost:5179` (of de poort die in de terminal verschijnt).
 
-2. **Backend Starten**
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   python main.py
-   ```
-   *De API draait op `http://localhost:8000`.*
-
-3. **Frontend Starten** (in een nieuwe terminal)
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-   *Open de app op `http://localhost:5173` (of de poort die Vite aangeeft).*
-
-## Gebruik
-1. **Load Dataset**: Voer het absolute pad in naar een CSV bestand in je `backend/data` map (bijv. `backend/data/test.csv`).
-2. **Experimenteer**: Klik op knoppen, voer acties uit (mockup voor drop/filter).
-3. **Time Travel**: Gebruik de Undo/Redo knoppen in de toolbar om terug te gaan in de tijd.
-4. **Export**: Klik op "Export Code" om je werk als Python script te downloaden.
-
-## 🛡️ Security Note
-Dit is een lokale applicatie. De `SecureLoader` beschermt tegen het lezen van systeembestanden (zoals `/etc/passwd`), maar staat wel toe om bestanden binnen de gehele projectmap te laden voor gebruiksgemak.
+## 🏗️ Architectuur
+- **Frontend**: React, TypeScript, TailwindCSS, Zustand, AG Grid, Recharts
+- **Backend**: FastAPI, Pandas, NumPy, Pydantic
+- **AI Engine**: Rule-based heuristics (gemakkelijk uitbreidbaar naar LLM)
 
 ---
-*Gebouwd voor de "Senior Code" Portfolio Challenge.*
+*Gebouwd met ❤️ voor data scientists die snelheid en controle willen.*
