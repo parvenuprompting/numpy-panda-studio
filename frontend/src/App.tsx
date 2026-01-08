@@ -1,16 +1,21 @@
-import MainLayout from './layouts/MainLayout';
-import DatasetLoaderHelper from './views/DatasetLoaderHelper';
 import DataView from './views/DataView';
+import DatasetLoaderHelper from './views/DatasetLoaderHelper';
+import SettingsView from './views/SettingsView';
+import MainLayout from './layouts/MainLayout';
 import { useAppStore } from './store/useAppStore';
 
 function App() {
-  const { sessionId } = useAppStore();
+  const { sessionId, activeView } = useAppStore();
 
   return (
     <MainLayout>
-      {sessionId ? <DataView /> : <DatasetLoaderHelper />}
+      {activeView === 'settings' ? (
+        <SettingsView />
+      ) : (
+        !sessionId ? <DatasetLoaderHelper /> : <DataView />
+      )}
     </MainLayout>
-  )
+  );
 }
 
 export default App

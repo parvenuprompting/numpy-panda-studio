@@ -36,8 +36,9 @@ export const DatasetService = {
         return response.data;
     },
 
-    exportSession: async (sessionId: string): Promise<Blob> => {
+    exportSession: async (sessionId: string, format: 'py' | 'ipynb' = 'py'): Promise<Blob> => {
         const response = await api.get(`/session/${sessionId}/export`, {
+            params: { format },
             responseType: 'blob'
         });
         return response.data;

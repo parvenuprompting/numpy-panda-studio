@@ -14,6 +14,13 @@ class ColumnProfile(BaseModel):
     min: Optional[Any] = None
     max: Optional[Any] = None
 
+class DataSuggestion(BaseModel):
+    type: str # 'astype', 'drop_column', 'fill_na'
+    column: str
+    description: str
+    action_params: Dict[str, Any] # Params to pass to apply_action
+    confidence: float # 0.0 to 1.0
+
 class DatasetProfile(BaseModel):
     rows: int
     columns: int
@@ -22,6 +29,7 @@ class DatasetProfile(BaseModel):
     missing_values: Dict[str, int]
     memory_usage_mb: float
     column_details: Dict[str, ColumnProfile] = {}
+    suggestions: List[DataSuggestion] = []
 
 class DatasetResponse(BaseModel):
     id: str

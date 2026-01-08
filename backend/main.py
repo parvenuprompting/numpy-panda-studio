@@ -143,22 +143,32 @@ async def redo_action(session_id: str):
     )
 
 @app.get("/session/{session_id}/export")
-async def export_session_code(session_id: str):
+async def export_session_code(session_id: str, format: str = "py"):
     session = session_store.load(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     
-    # session object restored from pickle has file_path/type
-    script = CodeGenerator.generate_script(
-        actions=session.history[:session.current_step + 1],
-        original_file_path=session.file_path,
-        file_type=session.file_type
-    )
+    if format == "ipynb":
+        content = CodeGenerator.generate_notebook(
+            actions=session.history[:session.current_step + 1],
+            original_file_path=session.file_path,
+            file_type=session.file_type
+        )
+        media_type = "application/x-ipynb+json"
+        filename = "pandas_analysis.ipynb"
+    else:
+        content = CodeGenerator.generate_script(
+            actions=session.history[:session.current_step + 1],
+            original_file_path=session.file_path,
+            file_type=session.file_type
+        )
+        media_type = "text/x-python"
+        filename = "pandas_script.py"
     
     return Response(
-        content=script,
-        media_type="text/x-python",
-        headers={"Content-Disposition": "attachment; filename=pandas_script.py"}
+        content=content,
+        media_type=media_type,
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 if __name__ == "__main__":

@@ -2,11 +2,15 @@ import React from 'react';
 import { LayoutDashboard, FileSpreadsheet, Settings } from 'lucide-react';
 import ActionPanel from '../components/ActionPanel';
 
+import { useAppStore } from '../store/useAppStore';
+
 interface MainLayoutProps {
     children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+    const { activeView, setActiveView } = useAppStore();
+
     return (
         <div className="flex h-screen w-screen bg-slate-900 text-white overflow-hidden font-sans">
             {/* Sidebar */}
@@ -16,10 +20,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
 
                 <nav className="flex-1 flex flex-col gap-4 w-full px-2">
-                    <button className="p-3 rounded-xl bg-white/10 text-blue-400 hover:bg-white/20 transition-all">
+                    <button
+                        onClick={() => setActiveView('data')}
+                        className={`p-3 rounded-xl transition-all ${activeView === 'data' ? 'bg-white/10 text-blue-400' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}`}
+                        title="Data Inspector"
+                    >
                         <LayoutDashboard className="w-5 h-5" />
                     </button>
-                    <button className="p-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all">
+                    <button
+                        onClick={() => setActiveView('settings')}
+                        className={`p-3 rounded-xl transition-all ${activeView === 'settings' ? 'bg-white/10 text-blue-400' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}`}
+                        title="Settings"
+                    >
                         <Settings className="w-5 h-5" />
                     </button>
                 </nav>

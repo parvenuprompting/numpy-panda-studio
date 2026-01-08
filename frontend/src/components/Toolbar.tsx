@@ -1,5 +1,5 @@
 import React from 'react';
-import { Undo, Redo, Trash2, Download } from 'lucide-react';
+import { Undo, Redo, Trash2, Download, FileJson } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 
 const Toolbar: React.FC = () => {
@@ -43,13 +43,24 @@ const Toolbar: React.FC = () => {
                 <span>Drop 'B'</span>
             </button>
 
-            <button
-                onClick={exportSession}
-                className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 rounded-lg text-sm font-medium transition-all"
-            >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export Code</span>
-            </button>
+            {/* Export Actions */}
+            <div className="flex bg-slate-800 rounded-lg p-1 border border-white/5 ml-auto">
+                <button
+                    onClick={() => exportSession('py')}
+                    className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+                >
+                    <Download className="w-3.5 h-3.5" />
+                    Export .py
+                </button>
+                <div className="w-px bg-white/10 my-1 mx-1"></div>
+                <button
+                    onClick={() => exportSession('ipynb')}
+                    className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-orange-400 hover:text-orange-300 hover:bg-white/5 rounded-md transition-colors"
+                >
+                    <FileJson className="w-3.5 h-3.5" />
+                    Export .ipynb
+                </button>
+            </div>
         </div>
     );
 };
