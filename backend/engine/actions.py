@@ -35,7 +35,7 @@ class ActionRegistry:
 
 # Define basic actions
 
-@ActionRegistry.register("drop_column", "df = df.drop(columns=['{column}'])")
+@ActionRegistry.register("drop_column", "df = df.drop(columns=[{column}])")
 def drop_column(df: pd.DataFrame, column: str) -> pd.DataFrame:
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -43,7 +43,7 @@ def drop_column(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 @ActionRegistry.register(
     "filter_rows", 
-    "df = df[df['{column}'] {operator} {value}]" # Note: Value might need quoting if string, handled in generator or simple repr()
+    "df = df[df[{column}] {operator} {value}]" 
 )
 def filter_rows(df: pd.DataFrame, column: str, operator: str, value: Any) -> pd.DataFrame:
     if column not in df.columns:
@@ -64,7 +64,7 @@ def filter_rows(df: pd.DataFrame, column: str, operator: str, value: Any) -> pd.
     else:
         raise ValueError(f"Unsupported operator: {operator}")
 
-@ActionRegistry.register("rename_column", "df = df.rename(columns={{'{old_name}': '{new_name}'}})")
+@ActionRegistry.register("rename_column", "df = df.rename(columns={{{old_name}: {new_name}}})")
 def rename_column(df: pd.DataFrame, old_name: str, new_name: str) -> pd.DataFrame:
     if old_name not in df.columns:
         raise ValueError(f"Column '{old_name}' not found.")
@@ -91,7 +91,7 @@ def fill_na(df: pd.DataFrame, value: Any, columns: list) -> pd.DataFrame:
     df[columns] = df[columns].fillna(value)
     return df
 
-@ActionRegistry.register("astype", "df['{column}'] = df['{column}'].astype('{dtype}')")
+@ActionRegistry.register("astype", "df[{column}] = df[{column}].astype({dtype})")
 def astype(df: pd.DataFrame, column: str, dtype: str) -> pd.DataFrame:
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -135,7 +135,7 @@ def groupby_agg(df: pd.DataFrame, group_by: list, aggregations: Dict[str, str]) 
 
 import numpy as np
 
-@ActionRegistry.register("math_transform", "df['{new_col_name}'] = np.{function}(df['{target_col}'])")
+@ActionRegistry.register("math_transform", "df[{new_col_name}] = np.{function}(df[{target_col}])")
 def math_transform(df: pd.DataFrame, target_col: str, function: str, new_col_name: str) -> pd.DataFrame:
     if target_col not in df.columns:
         raise ValueError(f"Column '{target_col}' not found")
@@ -163,7 +163,7 @@ def math_transform(df: pd.DataFrame, target_col: str, function: str, new_col_nam
         
     return df
 
-@ActionRegistry.register("conditional", "df['{new_col}'] = np.where(df['{column}'] {operator} {value}, {true_val}, {false_val})")
+@ActionRegistry.register("conditional", "df[{new_col}] = np.where(df[{column}] {operator} {value}, {true_val}, {false_val})")
 def conditional(df: pd.DataFrame, column: str, operator: str, value: Any, true_val: Any, false_val: Any, new_col: str) -> pd.DataFrame:
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found")

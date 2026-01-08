@@ -14,7 +14,10 @@
 ### 🚀 Krachtige Transformaties
 - **NumPy Integratie**: Voer razendsnelle wiskundige operaties uit (`log`, `sqrt`, `ceil`) en conditionele logica (`if/else`).
 - **Data Cleaning**: Slimme suggesties voor datakwaliteit, zero-click `DropNA` / `FillNA`.
-- **Veilige Sandbox**: Werkt volledig lokaal. Jouw data verlaat nooit je machine.
+- **Veilige Architectuur**: 
+    - **Secure Uploads**: Bestanden worden veilig opgeslagen met UUIDs (geen Local File Inclusion risico's).
+    - **Safe Storage**: Sessies worden opgeslagen als JSON en Parquet (geen Pickle RCE risico's).
+    - **Auto-Cleanup**: Tijdelijke bestanden worden automatisch opgeruimd bij herstart.
 
 ### 🛠️ Developer Friendly
 - **Code Export**: Exporteer je sessie direct naar een Python script (`.py`) of Jupyter Notebook (`.ipynb`).

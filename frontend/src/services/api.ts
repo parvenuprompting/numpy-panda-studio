@@ -16,6 +16,17 @@ export const DatasetService = {
         return response.data;
     },
 
+    uploadDataset: async (file: File): Promise<{ file_id: string, original_name: string }> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await api.post<{ file_id: string, original_name: string }>('/dataset/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+
     getPreview: async (sessionId: string): Promise<Record<string, any>[]> => {
         const response = await api.get<Record<string, any>[]>(`/dataset/${sessionId}/preview`);
         return response.data;

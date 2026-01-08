@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, JSONResponse
 from engine.dataset_loader import DatasetLoader
@@ -7,6 +7,7 @@ from engine.session import Session
 from engine.code_generator import CodeGenerator
 from engine.secure_loader import SecureLoader, SecurityException
 from engine.session_store import FileSessionStore
+from engine.upload_manager import UploadManager
 from schemas.api import DatasetLoadRequest, DatasetResponse, ActionSpec
 import uuid
 import os
@@ -19,10 +20,16 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Pandas Generator Studio API")
 
-# Allow CORS for local development
+# CORS Configuration
+# Read allowed origins from env, default to * with warning
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",")]
+
+logger.info(f"CORS Allowed Origins: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,10 +57,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Persistent Session Store
 session_store = FileSessionStore()
 
-# Ensure data directory exists on startup
+# Startup Event
 def startup_event():
     SecureLoader.ensure_data_dir_exists()
-    logger.info(f"SecureLoader initialized. Allowed dir: {SecureLoader.ALLOWED_DATA_DIR}")
+    UploadManager.clear_uploads() # Cleanup old uploads on restart
+    logger.info(f"Services initialized. Uploads cleared.")
 
 app.add_event_handler("startup", startup_event)
 
@@ -61,15 +69,39 @@ app.add_event_handler("startup", startup_event)
 async def health_check():
     return {"status": "ok", "service": "pandas-generator-studio-backend"}
 
+@app.post("/dataset/upload")
+async def upload_dataset(file: UploadFile = File(...)):
+    """
+    Uploads a file to the server for processing.
+    Returns a file_id (UUID) to be used in /dataset/load.
+    """
+    file_id, original_name = await UploadManager.save_upload(file)
+    return {"file_id": file_id, "original_name": original_name}
+
 @app.post("/dataset/load", response_model=DatasetResponse)
 async def load_dataset(request: DatasetLoadRequest):
     """
     Loads a dataset and initializes a new session.
-    Enforces security via SecureLoader.
+    Accepts file_id (UUID) from upload OR local path (if configured).
     """
-    # 1. Validate Path
-    validated_path = SecureLoader.validate_path(request.file_path)
+    # 1. Resolve Path
+    file_path = request.file_path
     
+    # Try as Upload ID first
+    try:
+        # Check if it looks like a valid UUID (simple heuristic or let get_path fail)
+        uuid.UUID(file_path)
+        validated_path = UploadManager.get_path(file_path)
+        logger.info(f"Loaded via UploadID: {file_path}")
+    except (ValueError, FileNotFoundError):
+        # Fallback to SecureLoader for local paths
+        try:
+             validated_path = SecureLoader.validate_path(file_path)
+             logger.info(f"Loaded via SecureLoader: {file_path}")
+        except Exception as e:
+             logger.warning(f"Load failed for {file_path}: {e}")
+             raise HTTPException(status_code=404, detail="File ID or Path not found")
+
     # 2. Load Dataset
     df = DatasetLoader.load_dataset(validated_path, request.file_type)
     session_id = str(uuid.uuid4())
