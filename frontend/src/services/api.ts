@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ActionSpec, DatasetLoadRequest, DatasetResponse } from '../types/dataset-types';
+import type { ActionSpec, DatasetLoadRequest, DatasetResponse } from '../types/dataset-types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 

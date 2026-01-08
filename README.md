@@ -1,12 +1,29 @@
-# Pandas Generator Studio
+![Pandas Generator Intro](banner.png)
+
+# Pandas Generator Studio 🐼
 
 Een lokale standalone applicatie met een moderne React GUI en een krachtige Python Pandas backend voor deterministische, AI-ondersteunde dataverwerking.
 
-## Features
-- **Lokaal & Privé**: Geen cloud, data blijft op je machine.
-- **Glassmorphism UI**: Moderne, responsieve interface gebouwd met React en TailwindCSS.
-- **Pandas Engine**: Betrouwbare dataverwerking via Python backend.
-- **AI Action Specs**: Bereid voor op AI-gestuurde data manipulaties via controleerbare JSON specs.
+## 🚀 Status: V1 Release (Senior Level)
+
+Dit project is geüpgraded naar een productie-waardig prototype met nadruk op architectuur, veiligheid en features.
+
+### ✨ Nieuwe Features
+- **Time Travel (Undo/Redo)**: Volledige sessie-geschiedenis. Maak fouten ongedaan en experimenteer vrij.
+- **Code Export**: Genereer met één klik een volledig reproduceerbaar Python script (`pandas_script.py`) van je hele sessie.
+- **Persistent Sessions**: Je werk wordt automatisch opgeslagen. Server restarts? Geen probleem, je sessie blijft bestaan.
+- **Secure Loader**: Beveiligd tegen Local File Inclusion (LFI). Alleen bestanden binnen de projectmap mogen geladen worden.
+
+### 🏗️ Architectuur & Kwaliteit
+- **Backend**: FastAPI + Pandas Engine.
+    - **Clean Architecture**: Strikte scheiding tussen `Actions` (logica), `Session` (state) en `API` (interface).
+    - **Static Typing**: Volledig getypeerd met `mypy` en `Pydantic` schemas.
+    - **Unit Tests**: Core logica (Code Generation, Session Logic) is getest met `pytest`.
+- **Frontend**: React + Vite + TailwindCSS.
+    - **State Management**: Robuuste implementatie met `Zustand`.
+    - **Type Safety**: Strikte TypeScript interfaces (met `import type` optimalisaties).
+    - **UI**: Modern "Glassmorphism" design.
+- **DevOps**: Docker & Docker Compose setup aanwezig.
 
 ## Installatie & Setup
 
@@ -14,47 +31,37 @@ Een lokale standalone applicatie met een moderne React GUI en een krachtige Pyth
 - Node.js (v18+)
 - Python (v3.9+)
 
-### Backend Starten
-1. Navigeer naar de backend map:
+### Snel Starten
+1. **Repository Clone**
+   ```bash
+   git clone https://github.com/parvenuprompting/pandas-studio.git
+   cd pandas-studio
+   ```
+
+2. **Backend Starten**
    ```bash
    cd backend
-   ```
-2. Installeer dependencies:
-   ```bash
    pip install -r requirements.txt
-   ```
-3. Start de server:
-   ```bash
    python main.py
    ```
-   De API draait op `http://localhost:8000`.
+   *De API draait op `http://localhost:8000`.*
 
-### Frontend Starten
-1. Navigeer naar de frontend map:
+3. **Frontend Starten** (in een nieuwe terminal)
    ```bash
    cd frontend
-   ```
-2. Installeer dependencies:
-   ```bash
    npm install
-   ```
-3. Start de development server:
-   ```bash
    npm run dev
    ```
-   Open de app op `http://localhost:5173`.
+   *Open de app op `http://localhost:5173` (of de poort die Vite aangeeft).*
 
-## Architectuur
-- **Frontend**: React, Vite, TailwindCSS (v4), Framer Motion, Zustand.
-- **Backend**: FastAPI, Pandas, Pydantic.
-- **Communicatie**: REST API (JSON).
+## Gebruik
+1. **Load Dataset**: Voer het absolute pad in naar een CSV bestand in je `backend/data` map (bijv. `backend/data/test.csv`).
+2. **Experimenteer**: Klik op knoppen, voer acties uit (mockup voor drop/filter).
+3. **Time Travel**: Gebruik de Undo/Redo knoppen in de toolbar om terug te gaan in de tijd.
+4. **Export**: Klik op "Export Code" om je werk als Python script te downloaden.
 
-## Status Update (Senior level features)
-- ✅ **Time Travel (Undo/Redo)**: Volledig werkende sessie-geschiedenis in backend & frontend.
-- ✅ **Code Export**: Genereer direct Python code van je acties.
-- ✅ **Architectuur & Rigor**: Strict typing (Mypy), Pydantic schemas, Unit tests voor core engine.
-- ✅ **Containerisatie**: Docker & Docker Compose setup voor lokale dev omgeving.
-- ✅ Project structuur opgezet.
-- ✅ Backend engine core (loader, profiler) geïmplementeerd.
-- ✅ Frontend UI basis (layout, glassmorphism) geïmplementeerd met Zustand.
-- ✅ Build systeem werkend.
+## 🛡️ Security Note
+Dit is een lokale applicatie. De `SecureLoader` beschermt tegen het lezen van systeembestanden (zoals `/etc/passwd`), maar staat wel toe om bestanden binnen de gehele projectmap te laden voor gebruiksgemak.
+
+---
+*Gebouwd voor de "Senior Code" Portfolio Challenge.*

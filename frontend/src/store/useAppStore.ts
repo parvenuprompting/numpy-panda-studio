@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { DatasetService } from '../services/api';
-import { ActionSpec, DatasetProfile, DatasetLoadRequest } from '../types/dataset-types';
+import type { ActionSpec, DatasetProfile, DatasetLoadRequest } from '../types/dataset-types';
 
 interface AppState {
     sessionId: string | null;

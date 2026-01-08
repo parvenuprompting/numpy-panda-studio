@@ -28,7 +28,7 @@ const DatasetLoaderHelper: React.FC = () => {
     };
 
     // Changing UI to accept Path Input for V1 local compatibility
-    const [path, setPath] = React.useState("/Users/T/Documents/Code/1-jan/week-2/pandas-generator-studio/backend/test_dataset.csv"); // Default for demo
+    const [path, setPath] = React.useState("/Users/T/Documents/Code/1-jan/week-2/pandas-generator-studio/backend/data/test.csv"); // Default for demo
 
     const handleLoad = async () => {
         await loadDataset({ file_path: path, file_type: 'csv' });
