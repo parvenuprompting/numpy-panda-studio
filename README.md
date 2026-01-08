@@ -4,11 +4,17 @@
 
 Een lokale standalone applicatie met een moderne React GUI en een krachtige Python Pandas backend voor deterministische, AI-ondersteunde dataverwerking.
 
-## 🚀 Status: V1 Release (Senior Level)
+## 🚀 Status: V2 Release (UX Transformation)
 
-Dit project is geüpgraded naar een productie-waardig prototype met nadruk op architectuur, veiligheid en features.
+Dit project is getransformeerd naar **Pandas Studio 2.0**: Een volwaardige Data Studio ervaring.
 
-### ✨ Nieuwe Features
+### ✨ Nieuwe Features (V2)
+- **Smart Grid**: Professionele spreadsheet-ervaring met `ag-grid`. Sorteren, filteren en resizen van kolommen.
+- **Action Builder Sidebar**: Bouw complexe transformaties (Filter, Sort, Drop) via een visuele UI in plaats van code.
+- **Visual Profiling**: Dashboard met datakwaliteit grafieken en statistieken per kolom.
+- **3-Pane Layout**: Geoptimaliseerde interface voor maximale productiviteit.
+
+### ✨ Core Features (V1)
 - **Time Travel (Undo/Redo)**: Volledige sessie-geschiedenis. Maak fouten ongedaan en experimenteer vrij.
 - **Code Export**: Genereer met één klik een volledig reproduceerbaar Python script (`pandas_script.py`) van je hele sessie.
 - **Persistent Sessions**: Je werk wordt automatisch opgeslagen. Server restarts? Geen probleem, je sessie blijft bestaan.
