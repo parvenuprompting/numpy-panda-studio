@@ -35,6 +35,7 @@ class DatasetResponse(BaseModel):
     id: str
     preview: List[Dict[str, Any]]
     profile: DatasetProfile
+    history: List[ActionSpec] = []
 
 class ActionSpec(BaseModel):
     intent: str

@@ -5,6 +5,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
 import type { ColDef } from 'ag-grid-community';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import ChartsView from './ChartsView';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -80,7 +81,7 @@ const ProfileView: React.FC = () => {
 
 const DataView: React.FC = () => {
     const { currentData, profile } = useAppStore();
-    const [activeTab, setActiveTab] = useState<'grid' | 'profile'>('grid');
+    const [activeTab, setActiveTab] = useState<'grid' | 'profile' | 'charts'>('grid');
 
     const columnDefs = useMemo<ColDef[]>(() => {
         if (!currentData || currentData.length === 0) return [];
@@ -134,13 +135,19 @@ const DataView: React.FC = () => {
                         >
                             Profiler
                         </button>
+                        <button
+                            onClick={() => setActiveTab('charts')}
+                            className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${activeTab === 'charts' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                        >
+                            Visualizer
+                        </button>
                     </div>
                 </div>
                 <Toolbar />
             </div>
 
             <div className="flex-1 bg-slate-800/50 rounded-2xl border border-white/5 overflow-hidden shadow-inner relative flex flex-col">
-                {activeTab === 'grid' ? (
+                {activeTab === 'grid' && (
                     <div className="ag-theme-alpine-dark w-full h-full flex-1">
                         <AgGridReact
                             rowData={currentData}
@@ -151,9 +158,9 @@ const DataView: React.FC = () => {
                             paginationPageSize={20}
                         />
                     </div>
-                ) : (
-                    <ProfileView />
                 )}
+                {activeTab === 'profile' && <ProfileView />}
+                {activeTab === 'charts' && <ChartsView />}
             </div>
         </div>
     );

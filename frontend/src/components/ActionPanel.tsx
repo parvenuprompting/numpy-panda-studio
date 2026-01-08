@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store/useAppStore';
-import { Play, Filter, Trash2, ArrowUpDown, Edit3, Type, XCircle, PaintBucket, Layers } from 'lucide-react';
+import { Play, Filter, Trash2, ArrowUpDown, Edit3, Type, XCircle, PaintBucket, Layers, Sparkles } from 'lucide-react';
+import RecipeList from './RecipeList';
 
 type OperationType = 'filter_rows' | 'drop_column' | 'sort_values' | 'rename_column' | 'drop_na' | 'fill_na' | 'astype' | 'groupby_agg' | 'math_transform' | 'conditional';
 
@@ -34,6 +35,10 @@ const ActionPanel: React.FC = () => {
     const [trueVal, setTrueVal] = useState('');
     const [falseVal, setFalseVal] = useState('');
 
+    // AI State
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [isAiLoading, setIsAiLoading] = useState(false);
+
     useEffect(() => {
         if (currentData && currentData.length > 0) {
             setColumns(Object.keys(currentData[0]));
@@ -51,6 +56,41 @@ const ActionPanel: React.FC = () => {
         setTrueVal('');
         setFalseVal('');
         // Keep selectedCol if it exists
+    };
+
+    const handleMagicSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!aiPrompt.trim()) return;
+
+        setIsAiLoading(true);
+        try {
+            const { sessionId } = useAppStore.getState();
+            if (!sessionId) return;
+
+            const spec = await import('../services/api').then(m => m.DatasetService.generateAIAction(sessionId, aiPrompt));
+
+            if (spec && spec.operations.length > 0) {
+                const op = spec.operations[0];
+                const type = op.action as OperationType;
+                const params = op.params;
+
+                handleOpChange(type);
+
+                // Pre-fill State based on inferred params
+                // This is a mapping logic from Spec -> UI State
+                if (params.column) setSelectedCol(params.column);
+                if (params.operator) setOperator(params.operator);
+                if (params.value !== undefined) setValue(String(params.value));
+                if (params.old_name) setSelectedCol(params.old_name);
+                if (params.new_name) setNewName(params.new_name);
+                if (params.subset) setTargetCols(params.subset);
+                if (params.ascending !== undefined) setIsAscending(params.ascending);
+            }
+        } catch (err) {
+            console.error("AI Error", err);
+        } finally {
+            setIsAiLoading(false);
+        }
     };
 
     const toggleColumn = (col: string, listSetter: React.Dispatch<React.SetStateAction<string[]>>) => {

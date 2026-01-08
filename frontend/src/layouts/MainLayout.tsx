@@ -35,6 +35,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                         <Settings className="w-5 h-5" />
                     </button>
                 </nav>
+
+                {/* Recipe List */}
+                <div className="w-full flex-1 overflow-hidden border-t border-slate-700/50 flex flex-col pt-2">
+                    {/* We need to pass the RecipeList here directly, or render it. 
+                        But wait, the Sidebar w-20 is too narrow for text.
+                        The design plan said: "Visualizes the history stack... Render a vertical list... Place this in the Left Sidebar".
+                        Wait, sidebar is currently wide enough only for icons: w-16 md:w-20.
+                        I need to expand the sidebar or make it a drawer?
+                        Or maybe place it above ActionPanel in the Right Sidebar?
+                        Plan said: "Place this in the Left Sidebar (or above the ActionPanel in the Right Sidebar)."
+                        Right Sidebar (ActionPanel) is w-80. That's better for text.
+                        The Left Sidebar is strictly navigation rail.
+                        
+                        Decision: INTEGRATE INTO RIGHT SIDEBAR (ActionPanel).
+                        It makes more sense as "Ingredients" for the "Action".
+                      */}
+                </div>
             </aside>
 
             {/* Main Content */}

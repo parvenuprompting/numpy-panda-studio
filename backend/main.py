@@ -83,7 +83,7 @@ async def load_dataset(request: DatasetLoadRequest):
     preview = DatasetLoader.get_preview(current_df)
     profile = Profiler.profile_dataset(current_df)
     
-    return DatasetResponse(id=session_id, preview=preview, profile=profile)
+    return DatasetResponse(id=session_id, preview=preview, profile=profile, history=[])
 
 @app.get("/dataset/{session_id}/preview")
 async def get_preview(session_id: str):
@@ -107,7 +107,8 @@ async def apply_action(session_id: str, action: ActionSpec):
     return DatasetResponse(
         id=session_id,
         preview=DatasetLoader.get_preview(current_df),
-        profile=Profiler.profile_dataset(current_df)
+        profile=Profiler.profile_dataset(current_df),
+        history=session.history[:session.current_step + 1]
     )
 
 @app.post("/session/{session_id}/undo", response_model=DatasetResponse)
@@ -123,7 +124,8 @@ async def undo_action(session_id: str):
     return DatasetResponse(
         id=session_id,
         preview=DatasetLoader.get_preview(current_df),
-        profile=Profiler.profile_dataset(current_df)
+        profile=Profiler.profile_dataset(current_df),
+        history=session.history[:session.current_step + 1]
     )
 
 @app.post("/session/{session_id}/redo", response_model=DatasetResponse)
@@ -139,7 +141,8 @@ async def redo_action(session_id: str):
     return DatasetResponse(
         id=session_id,
         preview=DatasetLoader.get_preview(current_df),
-        profile=Profiler.profile_dataset(current_df)
+        profile=Profiler.profile_dataset(current_df),
+        history=session.history[:session.current_step + 1]
     )
 
 @app.get("/session/{session_id}/export")
@@ -170,6 +173,30 @@ async def export_session_code(session_id: str, format: str = "py"):
         media_type=media_type,
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
+
+@app.post("/ai/generate-action")
+async def generate_ai_action(request: Request):
+    """
+    Generates an ActionSpec from a natural language prompt.
+    Body: { "prompt": str, "session_id": str }
+    """
+    data = await request.json()
+    prompt = data.get("prompt")
+    session_id = data.get("session_id")
+    
+    if not prompt or not session_id:
+        raise HTTPException(status_code=400, detail="Missing prompt or session_id")
+        
+    session = session_store.load(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+        
+    current_columns = list(session.get_current_df().columns)
+    
+    from engine.ai_assistant import AIAssistant
+    action_spec = AIAssistant.generate_action_spec(prompt, current_columns)
+    
+    return action_spec
 
 if __name__ == "__main__":
     import uvicorn

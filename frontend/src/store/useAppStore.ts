@@ -24,6 +24,7 @@ interface AppState {
     currentData: Record<string, any>[];
     currentData: Record<string, any>[] | null; // Changed to allow null for initial state
     profile: DatasetProfile | null;
+    history: ActionSpec[]; // Full history
     isLoading: boolean;
     error: string | null;
     canUndo: boolean;
@@ -63,6 +64,7 @@ export const useAppStore = create<AppState & AppActions>()(
             sessionId: null,
             currentData: null,
             profile: null,
+            history: [],
             historyPointer: -1,
             maxHistory: -1,
             canUndo: false,
@@ -78,6 +80,7 @@ export const useAppStore = create<AppState & AppActions>()(
                         sessionId: res.id,
                         currentData: res.preview,
                         profile: res.profile,
+                        history: res.history,
                         // Reset history on new load
                         canUndo: false,
                         canRedo: false,
@@ -102,6 +105,7 @@ export const useAppStore = create<AppState & AppActions>()(
                     set({
                         currentData: res.preview,
                         profile: res.profile,
+                        history: res.history,
                         // Optimistic history update (backend handles truth)
                         canUndo: true,
                         canRedo: false
@@ -122,6 +126,7 @@ export const useAppStore = create<AppState & AppActions>()(
                     set({
                         currentData: res.preview,
                         profile: res.profile,
+                        history: res.history,
                         // We strictly should ask backend for canUndo status, but for V1 we toggle basic state
                         // A better backend response would include { can_undo: bool, can_redo: bool }
                         activeView: 'data'
@@ -141,7 +146,7 @@ export const useAppStore = create<AppState & AppActions>()(
                 try {
                     set({ isLoading: true });
                     const res = await DatasetService.redo(sessionId);
-                    set({ currentData: res.preview, profile: res.profile });
+                    set({ currentData: res.preview, profile: res.profile, history: res.history });
                 } catch (err: any) {
                     set({ error: err.message });
                 } finally {
