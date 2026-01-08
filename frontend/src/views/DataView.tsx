@@ -12,6 +12,20 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 // Register modules
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
+// Custom Glass Theme for AG Grid
+const gridStyle = {
+    '--ag-foreground-color': '#fff',
+    '--ag-background-color': 'rgba(15, 23, 42, 0.2)', // slate-900 / 0.2 - More transparent
+    '--ag-header-background-color': 'rgba(30, 41, 59, 0.4)', // slate-800 / 0.4 - Glassy header
+    '--ag-odd-row-background-color': 'rgba(255, 255, 255, 0.02)', // Very subtle stripe
+    '--ag-header-column-separator-display': 'block',
+    '--ag-header-column-separator-color': 'rgba(255, 255, 255, 0.1)',
+    '--ag-row-border-color': 'rgba(255, 255, 255, 0.05)',
+    '--ag-borders': 'none',
+    '--ag-header-foreground-color': '#94a3b8',
+    '--ag-row-hover-color': 'rgba(59, 130, 246, 0.2)', // Stronger hover effect
+} as React.CSSProperties;
+
 const ProfileView: React.FC = () => {
     const { profile } = useAppStore();
     if (!profile) return <div>No profile data</div>;
@@ -146,18 +160,83 @@ const DataView: React.FC = () => {
                 <Toolbar />
             </div>
 
-            <div className="flex-1 bg-slate-800/50 rounded-2xl border border-white/5 overflow-hidden shadow-inner relative flex flex-col">
+            <div className="flex-1 bg-slate-900/30 rounded-2xl border border-white/10 overflow-hidden shadow-2xl relative flex flex-col backdrop-blur-md">
                 {activeTab === 'grid' && (
-                    <div className="ag-theme-alpine-dark w-full h-full flex-1">
-                        <AgGridReact
-                            rowData={currentData}
-                            columnDefs={columnDefs}
-                            defaultColDef={defaultColDef}
-                            animateRows={true}
-                            pagination={true}
-                            paginationPageSize={20}
-                        />
-                    </div>
+                    <>
+                        <style>
+                            {`
+                                .ag-theme-alpine {
+                                    /* CSS Variables Override */
+                                    --ag-foreground-color: #f8fafc !important;
+                                    --ag-background-color: transparent !important;
+                                    --ag-header-background-color: rgba(15, 23, 42, 0.6) !important;
+                                    --ag-header-foreground-color: #f8fafc !important;
+                                    --ag-secondary-foreground-color: #94a3b8 !important;
+                                    --ag-row-border-color: rgba(255, 255, 255, 0.05) !important;
+                                    --ag-row-hover-color: rgba(59, 130, 246, 0.2) !important;
+                                    --ag-odd-row-background-color: rgba(255, 255, 255, 0.02) !important;
+                                }
+
+                                /* Deep structure overrides */
+                                .ag-theme-alpine .ag-root-wrapper,
+                                .ag-theme-alpine .ag-root-wrapper-body,
+                                .ag-theme-alpine .ag-root,
+                                .ag-theme-alpine .ag-body-viewport,
+                                .ag-theme-alpine .ag-body {
+                                    background: transparent !important;
+                                }
+
+                                /* Row transparency & Text Color */
+                                .ag-theme-alpine .ag-row {
+                                    background-color: transparent !important;
+                                    color: #f8fafc !important;
+                                    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+                                }
+                                
+                                .ag-theme-alpine .ag-row-odd {
+                                    background-color: rgba(255, 255, 255, 0.02) !important;
+                                }
+
+                                .ag-theme-alpine .ag-row:hover {
+                                    background-color: rgba(59, 130, 246, 0.2) !important;
+                                }
+
+                                /* Header styling */
+                                .ag-theme-alpine .ag-header {
+                                    background-color: rgba(15, 23, 42, 0.6) !important;
+                                    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                                }
+                                
+                                .ag-theme-alpine .ag-header-cell-text {
+                                    font-weight: 600 !important;
+                                    color: #e2e8f0 !important;
+                                }
+
+                                /* Scrollbars */
+                                .ag-body-viewport::-webkit-scrollbar {
+                                    width: 8px;
+                                    height: 8px;
+                                }
+                                .ag-body-viewport::-webkit-scrollbar-track {
+                                    background: rgba(15, 23, 42, 0.4);
+                                }
+                                .ag-body-viewport::-webkit-scrollbar-thumb {
+                                    background: rgba(255, 255, 255, 0.2);
+                                    border-radius: 4px;
+                                }
+                            `}
+                        </style>
+                        <div className="ag-theme-alpine w-full h-full flex-1 glass-grid" style={gridStyle}>
+                            <AgGridReact
+                                rowData={currentData}
+                                columnDefs={columnDefs}
+                                defaultColDef={defaultColDef}
+                                animateRows={true}
+                                pagination={true}
+                                paginationPageSize={20}
+                            />
+                        </div>
+                    </>
                 )}
                 {activeTab === 'profile' && <ProfileView />}
                 {activeTab === 'charts' && <ChartsView />}

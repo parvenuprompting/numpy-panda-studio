@@ -57,8 +57,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {/* Main Content */}
             <main className="flex-1 relative overflow-hidden flex flex-col">
                 {/* Background Gradients */}
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+                {/* Video Background */}
+                <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute w-full h-full object-cover opacity-30"
+                        poster="/video-poster.png" // Optional
+                    >
+                        <source src="/videos/background.mp4" type="video/mp4" />
+                    </video>
+                    {/* Overlay to ensure text readability */}
+                    <div className="absolute inset-0 bg-slate-900/80" />
+                </div>
 
                 <div className="relative z-10 flex-1 p-6 overflow-auto flex flex-col">
                     {children}
