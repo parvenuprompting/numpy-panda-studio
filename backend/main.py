@@ -22,7 +22,7 @@ app = FastAPI(title="Pandas Generator Studio API")
 
 # CORS Configuration
 # Read allowed origins from env, default to * with warning
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
 allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",")]
 
 logger.info(f"CORS Allowed Origins: {allowed_origins}")

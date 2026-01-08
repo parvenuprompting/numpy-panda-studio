@@ -1,3 +1,4 @@
+from typing import List
 from schemas.api import DatasetProfile, ColumnProfile
 import pandas as pd
 import numpy as np

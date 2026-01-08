@@ -31,12 +31,12 @@ class DatasetProfile(BaseModel):
     column_details: Dict[str, ColumnProfile] = {}
     suggestions: List[DataSuggestion] = []
 
+class ActionSpec(BaseModel):
+    intent: str
+    operations: List[Dict[str, Any]]
+
 class DatasetResponse(BaseModel):
     id: str
     preview: List[Dict[str, Any]]
     profile: DatasetProfile
     history: List[ActionSpec] = []
-
-class ActionSpec(BaseModel):
-    intent: str
-    operations: List[Dict[str, Any]]
